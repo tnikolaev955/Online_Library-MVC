@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Online_Library.Data;
+
 namespace Online_Library
 {
     public class Program
@@ -8,6 +11,10 @@ namespace Online_Library
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<LibraryDbContext>(options=> 
+              options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); //DefaultConnection - име на ключа
+
+
 
             var app = builder.Build();
 
