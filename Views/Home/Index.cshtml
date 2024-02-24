@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Online_Library.Models.Book>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<body>
+
+    <header>
+        <h1>Добре дошли в Библиотеката</h1>
+    </header>
+
+    <section>
+        <p>
+            Добре дошли в нашата Библиотека, където знанието оживява! Ако все още нямате акаунт, направете си един
+            бързо и лесно. Акаунтът ще ви предостави достъп до уникални книги и ресурси.
+        </p>
+    </section>
+    <h2 class="text-center">Книги с най-висок рейтинг</h2>
+    <div class="d-flex flex-wrap">
+        
+        @foreach (var item in Model)
+        {
+            <div class="card" style="margin:15px; max-width:25%">
+                <img src="@Html.DisplayFor(modelItem => item.PictureLink)"
+                     class="card-img-top" alt="@Html.DisplayFor(modelItem => item.Title)">
+                <div class="card-body">
+                    <h5 class="card-title"> @Html.DisplayFor(modelItem => item.Title) </h5>
+                    @{
+                        var descr = item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description;
+                    }
+                    <p class="card-text"> @Html.DisplayFor(modelItem => descr)  </p>
+                    <a asp-action="Details" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Разгледай</a>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+﻿@model Online_Library.View_Model.CatalogModel;
+
+@{
+    ViewData["Title"] = "Catalog";
+}
+
+<div class="d-flex flex-wrap flex-column justify-content-center align-items-center align-content-space-between">
+    @{
+        string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+        string action = this.ViewContext.RouteData.Values["action"].ToString();
+    }
+    <ul class="pagination">
+        @for (int i = 0; i < Model.Pager.PagesCounter; i++)
+        {
+            <li class="page-item"><a class="page-link" href="/@controller/@action?Pager.Page=@(i+1)&Pager.ItemsPerPage=@Model.Pager.ItemsPerPage">@(i + 1)</a></li>
+        }
+    </ul>
+
+    <script>
+        var controller = "@controller";
+        var sortBy = "@Model.SortBy";
+        var sortOrder = "@Model.SortOrder";
+
+        function ddlItemsPerPage_OnChange() {
+            let control = document.getElementById("ddlItemsPerPage");
+            document.location.href = "/" + controller + "/" + action + "?Pager.Page=1&Pager.ItemsPerPage=" + control.value + "&SortBy=" + sortBy + "&SortOrder=" + sortOrder;
+        }
+
+        function sortBy_change() {
+            let sB = document.getElementById("sortBy");
+            document.location.href = "/" + controller + "/" + action + "?Pager.Page=1&Pager.ItemsPerPage=" + "@Model.Pager.ItemsPerPage" + "&SortBy=" + sB.value + "&SortOrder=" + sortOrder;
+        }
+
+        function sortOrder_change() {
+            let sO = document.getElementById("sortOrder");
+            document.location.href = "/" + controller + "/" + action + "?Pager.Page=1&Pager.ItemsPerPage=" + "@Model.Pager.ItemsPerPage" + "&SortBy=" + sortBy + "&SortOrder=" + sO.value;
+        }
+    </script>
+
+    <div class="d-flex align-items-center justify-content-center">
+        <label for="ddlItemsPerPage" class="ml-3" style="width:200px">Елементи на страница:</label>
+        <select id="ddlItemsPerPage" class="form-control ml-1" style="width:10%" onchange="ddlItemsPerPage_OnChange()">
+            <option> </option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+        </select>
+    </div>
+
+    <div class="d-flex align-items-end">
+        Сортирай:
+        <label for="sortBy">По</label>
+        <select id="sortBy" onchange="sortBy_change()">
+            <option> </option>
+            <option value="year">Година на публикуване</option>
+            <option value="A-Z">Азбучен ред</option>
+            <option value="rating">Рейтинг</option>
+        </select>
+        <label for="sortOrder"> Подреди </label>
+        <select id="sortOrder" onchange="sortOrder_change()">
+            <option> </option>
+            <option value="desc">Низходящо</option>
+            <option value="asc">Възходящо</option>
+        </select>
+    </div>
+</div>
+
+
+
+<div style="display:flex">
+    @Html.HiddenFor(m => m.Pager.ItemsPerPage)
+    <div class="list-group" style="margin-top:20px">
+        <ul>
+            @foreach (var item in Model.categories)
+            {
+                <a asp-controller="Shared" asp-action="FilterCategory" asp-route-category="@item.Id" class="list-group-item list-group-item-action"> @item.Title</a>
+            }
+        </ul>
+    </div>
+    <div class="d-flex flex-row-reverse justify-content-center align-content-center flex-wrap">
+@foreach (var item in Model.books)
+{
+    <div class="card" style="width: 18rem; margin:15px">
+        <img src="@Html.DisplayFor(modelItem => item.PictureLink)"
+        class="card-img-top" alt="@Html.DisplayFor(modelItem => item.Title)">
+        <div class="card-body">
+            <h5 class="card-title"> @Html.DisplayFor(modelItem => item.Title) </h5>
+                    @{
+                        var descr = item.Description.Length > 150 ? item.Description.Substring(0, 150) + "..." : item.Description;
+                    }
+            <p class="card-text"> @Html.DisplayFor(modelItem => descr)  </p>
+            <a asp-action="Details" asp-route-id="@item.Id"  class="btn btn-primary">Разгледай</a>
+        </div>
+    </div>
+}
+</div>
+</div>
+
