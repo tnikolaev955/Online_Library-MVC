@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Online_Library.View_Model.Books.TopReader>
+
+@{
+    ViewData["Title"] = "Прочетени книги";
+    DateTime startDate = DateTime.Now.AddMonths(-1);
+    DateTime endDate = DateTime.Now;
+}
+
+<h1>Топ читатели на месеца</h1>
+<h2 class="text-center">период: от @startDate.ToShortDateString() до @endDate.ToShortDateString() </h2>
+
+<div class="d-flex justify-content-around mt-5">
+<table class="table" style="max-width:50%">
+    <thead>
+        <tr>
+            <th>
+                Потребителско име
+            </th>
+            <th>
+                Прочетени книги
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.bookRead)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>

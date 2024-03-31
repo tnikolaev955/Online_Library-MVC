@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Online_Library.Data;
+
 namespace Online_Library
 {
     public class Program
@@ -5,9 +8,14 @@ namespace Online_Library
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDistributedMemoryCache();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSession();
+            builder.Services.AddDbContext<LibraryDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             var app = builder.Build();
 
@@ -23,7 +31,7 @@ namespace Online_Library
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapControllerRoute(

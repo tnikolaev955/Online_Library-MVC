@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Online_Library.Models.Book>
+
+@{
+    ViewData["Title"] = "Любими книги";
+}
+
+    <h1 class="text-center">
+        Любими книги
+    </h1>
+        <div class="d-flex flex-row justify-content-center align-content-center flex-wrap">
+@foreach (var item in Model)
+{
+    <div class="card" style="width: 18rem; margin:15px">
+        <img src="@Html.DisplayFor(modelItem => item.PictureLink)"
+        class="card-img-top" alt="@Html.DisplayFor(modelItem => item.Title)">
+        <div class="card-body">
+                    <h5 class="card-title"> @Html.DisplayFor(modelItem => item.Title)  (@Html.DisplayFor(modelItem => item.YearOfPublish) г. ) </h5>
+                    @{
+                        var descr = item.Description.Length > 150 ? item.Description.Substring(0, 150) + "..." : item.Description;
+                    }
+            <p class="card-text"> @Html.DisplayFor(modelItem => descr)  </p>
+            <a asp-action="Details" asp-route-id="@item.Id"  class="btn btn-primary">Разгледай</a>
+            <a asp-action="RemoveFromFavorites" asp-route-id="@item.Id"  class="btn btn-danger mt-2">Премахни от любими</a>
+        </div>
+    </div>
+}
+</div>

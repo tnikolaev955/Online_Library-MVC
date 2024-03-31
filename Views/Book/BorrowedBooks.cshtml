@@ -1,0 +1,100 @@
+﻿@model Online_Library.View_Model.Books.BorrowVM
+
+@{
+    ViewData["Title"] = "Наети книги";
+    
+}
+
+<h2>За връщане</h2>
+<p class="text-danger">Редовете в червено са закъснели за връщане книги. Срока за връщане е 7 дни.</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Заглавие
+            </th>
+            <th>
+                Автор
+            </th>
+
+            <th>
+                Дата на заемане
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.toReturn)
+        {
+            string ReturnedOnTime = ((DateTime.Today - item.DateOfBorrow).TotalDays > 7) ? "bg-danger text-white" : "";
+            <tr >
+                <td class="@ReturnedOnTime">
+                    @Html.DisplayFor(modelItem => item.Book.Title)
+                </td>
+                <td class="@ReturnedOnTime">
+                    @Html.DisplayFor(modelItem => item.Book.Author)
+                </td>
+                <td class="@ReturnedOnTime">
+                    @Html.DisplayFor(modelItem => item.DateOfBorrow)
+                </td>
+
+                <td class="@ReturnedOnTime">
+                    <a class="@ReturnedOnTime" asp-action="Details" asp-route-id="@item.Book.Id">Детайли</a> |
+                    <a class="@ReturnedOnTime" asp-action="ReturnBook" asp-route-id="@item.Id">Върни</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<h2>
+    Върнати</h2>
+    <p class="text-danger">Редовете в червено са книги, които не са върнати на време. Срока за връщане е 7 дни.</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Заглавие
+                </th>
+                <th>
+                    Автор
+                </th>
+
+                <th>
+                    Дата на заемане
+                </th>
+                <th>
+                    Дата на връщане
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.returned)
+            {
+                     string ReturnedOnTime = ((item.DateOfReturn - item.DateOfBorrow)?.TotalDays > 7) ? "text-danger" : "";
+                <tr>
+                    <td class="@ReturnedOnTime">
+                        @Html.DisplayFor(modelItem => item.Book.Title)
+                    </td>
+                    <td class="@ReturnedOnTime">
+                        @Html.DisplayFor(modelItem => item.Book.Author)
+                    </td>
+                    <td class="@ReturnedOnTime">
+                        @Html.DisplayFor(modelItem => item.DateOfBorrow)
+                    </td>
+                    <td class="@ReturnedOnTime">
+                        @Html.DisplayFor(modelItem => item.DateOfReturn)
+                    </td>
+                    <td>
+                        <a class="@ReturnedOnTime" asp-action="Details" asp-route-id="@item.Book.Id">Детайли</a> |
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

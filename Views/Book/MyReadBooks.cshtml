@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Online_Library.Models.UserReadsBook>
+
+@{
+    ViewData["Title"] = "Прочетени книги";
+}
+
+<h1 class="mb-5">Прочетени Книги</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Book.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book.Author)
+            </th>
+
+            <th> Дата на прочитане</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfRead)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Book.Id">Детайли</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

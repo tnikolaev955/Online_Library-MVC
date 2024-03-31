@@ -1,0 +1,185 @@
+﻿@model Online_Library.View_Model.CatalogModel;
+
+@{
+    ViewData["Title"] = "Catalog";
+}
+
+<div class="d-flex flex-wrap flex-column justify-content-center align-items-center align-content-space-between">
+    @{
+        string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+        string action = this.ViewContext.RouteData.Values["action"].ToString();
+    }
+
+
+
+    <div class="d-flex align-items-center justify-content-center mt-5">
+        <label for="ddlItemsPerPage" class="ml-3" style="width:175px">Елементи на страница:</label>
+        <select id="ddlItemsPerPage" onchange="ddlItemsPerPage_OnChange()">
+            <option> </option>
+
+            @if (Model.Pager.ItemsPerPage == 5)
+            {
+                <option selected value="5">5</option>
+
+            }
+            else
+            {
+                <option value="5">5</option>
+
+            }
+            @if (Model.Pager.ItemsPerPage == 10)
+            {
+                <option selected value="10">10</option>
+            }
+            else
+            {
+                <option value="10">10</option>
+            }
+            @if (Model.Pager.ItemsPerPage == 25)
+            {
+                <option selected value="25">25</option>
+
+            }
+            else
+            {
+                <option value="25">25</option>
+            }
+        </select>
+    </div>
+
+    <div class="d-flex align-items-end">
+        <label class="mx-1"> Сортирай: </label>
+        <label class="mx-2" for="sortBy">По</label>
+        <select id="sortBy" onchange="sortBy_change()">
+            <option> </option>
+            @if (Model.SortBy == "year")
+            {
+                <option selected value="year">Година на публикуване</option>
+            }
+            else
+            {
+                <option value="year">Година на публикуване</option>
+            }
+            @if (Model.SortBy == "A-Z")
+            {
+                <option selected value="A-Z">Азбучен ред</option>
+            }
+            else
+            {
+                <option value="A-Z">Азбучен ред</option>
+            }
+            @if (Model.SortBy == "rating")
+            {
+                <option selected value="rating">Рейтинг</option>
+            }
+            else
+            {
+                <option value="rating">Рейтинг</option>
+            }
+
+
+        </select>
+        <label class="mx-2" for="sortOrder"> Подреди </label>
+        <select id="sortOrder" onchange="sortOrder_change()">
+            <option> </option>
+            @if (Model.SortOrder == "desc")
+            {
+                <option selected value="desc">Низходящо</option>
+            }
+            else
+            {
+                <option value="desc">Низходящо</option>
+            }
+            @if (Model.SortOrder == "asc")
+            {
+                <option selected value="asc">Възходящо</option>
+            }
+            else
+            {
+                <option value="asc">Възходящо</option>
+            }
+        </select>
+    </div>
+</div>
+
+
+
+<div style="display:flex">
+    @Html.HiddenFor(m => m.Pager.ItemsPerPage)
+    <div class="list-group" style="margin-top:20px">
+        <ul>
+            @foreach (var item in Model.categories)
+            {
+                <a asp-controller="Shared" asp-action="FilterCategory" asp-route-category="@item.Id" class="list-group-item list-group-item-action"> @item.Title</a>
+            }
+        </ul>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-content-center flex-wrap">
+        @foreach (var item in Model.books)
+        {
+            <div class="card" style="margin:15px; max-width:25%">
+                <img src="@Html.DisplayFor(modelItem => item.PictureLink)"
+                     class="card-img-top" alt="@Html.DisplayFor(modelItem => item.Title)">
+                <div class="card-body">
+                    <h5 class="card-title"> @Html.DisplayFor(modelItem => item.Title) </h5>
+                    @{
+                        var descr = item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description;
+                    }
+                    <p class="card-text"> @Html.DisplayFor(modelItem => descr)  </p>
+                    <a asp-action="Details" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Разгледай</a>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+<div class="d-flex justify-content-center pt-5 ">
+
+    <ul class="pagination">
+        @for (int i = 0; i < Model.Pager.PagesCounter; i++)
+        {
+            <li class="page-item">
+                <a class="page-link" href="
+                /@controller/@action?Pager.Page=@(i+1)&Pager.ItemsPerPage=@Model.Pager.ItemsPerPage&SortBy=@Model.SortBy&SortOrder=@Model.SortOrder">@(i + 1)</a>
+            </li>
+        }
+    </ul>
+
+</div>
+
+
+<script>
+    function ddlItemsPerPage_OnChange() {
+        var controller = "@controller";
+        var action = "@action";
+        var sortBy = "@Model.SortBy";
+        var sortOrder = "@Model.SortOrder"
+
+        let control = document.getElementById("ddlItemsPerPage");
+        document.location.href = "/" + controller + "/" + action + "?Pager.Page=1&Pager.ItemsPerPage=" + control.value + "&SortBy=" + sortBy + "&SortOrder=" + sortOrder;
+    }
+</script>
+<script>
+    function sortBy_change() {
+        var controller = "@controller";
+        var action = "@action";
+        var itemsPerPage = "@Model.Pager.ItemsPerPage";
+        var sortOrder = "@Model.SortOrder";
+
+        let sB = document.getElementById("sortBy");
+        document.location.href = "/" + controller + "/" + action + "?Pager.Page=1&Pager.ItemsPerPage=" + itemsPerPage + "&SortBy=" + sB.value + "&SortOrder=" + sortOrder;
+    }
+</script>
+<script>
+    function sortOrder_change() {
+        console.log("sortorder");
+
+        var controller = "@controller";
+        var action = "@action";
+        var sortBy = "@Model.SortBy";
+        var itemsPerPage = "@Model.Pager.ItemsPerPage";
+
+        let sO = document.getElementById("sortOrder");
+        document.location.href = "/" + controller + "/" + action + "?Pager.Page=1&Pager.ItemsPerPage=" + itemsPerPage + "&SortBy=" + sortBy + "&SortOrder=" + sO.value;
+    }
+</script>

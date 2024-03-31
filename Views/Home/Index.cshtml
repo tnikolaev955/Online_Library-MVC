@@ -1,8 +1,75 @@
-﻿@{
+﻿@model Online_Library.View_Model.Books.HomeBooksVM
+
+@{
     ViewData["Title"] = "Home Page";
+    var borrowedBooksCount = TempData["BorrowedBooksCount"] as int?;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<body>
+
+    <header>
+        <h1>Добре дошли в Библиотеката</h1>
+    </header>
+
+    <section>
+        <p>
+            Добре дошли в нашата Библиотека, където знанието оживява! Ако все още нямате акаунт, направете си един
+            бързо и лесно. Акаунтът ще ви предостави достъп до уникални книги и ресурси.
+        </p>
+    </section>
+    <h2 class="text-center">Книги с най-висок рейтинг</h2>
+    <div class="d-flex flex-wrap" style="margin-left:10%;">
+        
+        @foreach (var item in Model.Top5Books)
+        {
+            <div class="card" style="margin:15px; max-width:25%">
+                <img src="@Html.DisplayFor(modelItem => item.PictureLink)"
+                     class="card-img-top" alt="@Html.DisplayFor(modelItem => item.Title)">
+                <div class="card-body">
+                    <h5 class="card-title"> @Html.DisplayFor(modelItem => item.Title) </h5>
+                    @{
+                        var descr = item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description;
+                    }
+                    <p class="card-text"> @Html.DisplayFor(modelItem => descr)  </p>
+                    <a asp-action="Details" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Разгледай</a>
+                </div>
+            </div>
+        }
+    </div>
+    <h2 class="text-center">Препоръчани книги</h2>
+
+    @if(Model.RecommendedBooks != null && Model.RecommendedBooks.Count > 0)
+    {
+        <div class="d-flex flex-wrap" style="margin-left:10%;">
+
+            @foreach (var item in Model.RecommendedBooks)
+            {
+                <div class="card" style="margin:15px; max-width:25%">
+                    <img src="@Html.DisplayFor(modelItem => item.PictureLink)"
+                         class="card-img-top" alt="@Html.DisplayFor(modelItem => item.Title)">
+                    <div class="card-body">
+                        <h5 class="card-title"> @Html.DisplayFor(modelItem => item.Title) </h5>
+                        @{
+                            var descr = item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description;
+                        }
+                        <p class="card-text"> @Html.DisplayFor(modelItem => descr)  </p>
+                        <a asp-action="Details" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Разгледай</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else 
+    {
+        <h3 class="text-center">За да виждате препоръчани книги: Моля добавете книги в любими</h3>
+
+    }
+</body>
+@if(borrowedBooksCount !=null && borrowedBooksCount > 0)
+{
+    <script>
+        alert("You have @borrowedBooksCount books to return");
+    </script>
+}
+</html>

@@ -1,0 +1,94 @@
+﻿@model UserReadsBook;
+@{
+    ViewData["Title"] = "Read Book";
+    var value = this.ViewContext.HttpContext.Session.GetString("loggedUser");
+    User loggedUser = null;
+    if (value != null)
+    {
+        loggedUser = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(value);
+    }
+}
+
+
+<h1></h1>
+
+<div>
+    <div class="card mb-3" style="width:80%">
+
+        <div class="card-body style="display:flex">
+            <div >
+                <div class ="row justify-content-between">
+                    <div class="col-sm" >
+                        <h2 class="card-title">@Html.DisplayFor(model => model.Book.Title) (@Html.DisplayFor(model => model.Book.YearOfPublish)) г.</h2>
+                        <p class="card-text">
+                            <small class="text-body-secondary">
+                                Автор: @Html.DisplayFor(model => model.Book.Author)
+                            </small>
+                        </p>
+                    </div>
+                    <div class="col-sm">
+                    <form asp-action="ReadBook" asp-controller="Book" method="post" class="row align-items-center mr-5">
+
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+
+                        <div class="form-check col-sm">
+                            <label>
+                                <input type="checkbox" asp-for="IsRead" /> Прочетена
+                            </label>
+                        </div>
+
+                        <div class="form-group col-sm">
+                            <label asp-for="Page" class="control-label"></label>
+                            <input asp-for="Page" class="form-control" />
+                            <span asp-validation-for="Page" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary col-sm">Запази</button>
+                    </form>
+                    </div>
+                </div>
+                
+
+            </div>
+            @if (Model.Book.PdfFilePath != null && Model.Book.PdfFilePath.Trim() != "")
+            {
+                <div class="d-flex justify-content-between">
+                    <p> Изтегли <i class="bi bi-file-pdf"></i> <a href="@Url.Content(Model.Book.PdfFilePath)"> от тук</a></p>
+                   
+                </div>
+                <embed id="embededPdf" src="@Url.Content(Model.Book.PdfFilePath)" type="application/pdf" width="100%" height="900px" />
+            }
+
+
+
+
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Catalog">Към каталога с книги</a>
+    </div>
+
+
+    <script>
+
+        function getCurrentPageNumber() {
+            console.log("In the Script");
+            var pdfEmbeded = document.getElementById("embededPdf");
+
+            pdfEmbeded.onload = function () {
+                var pdfDoc = pdfEmbeded.getSVGDocument();
+
+                if (pdfDoc) {
+                    // Get the current page number
+                    var currentPageNumber = pdfDoc.pageNumber;
+                    console.log("Current Page number: ", currentPageNumber);
+                } else {
+                    console.log("Failed to access the PDF document.");
+                }
+            }
+        }
+
+
+        getCurrentPageNumber();
+    </script>

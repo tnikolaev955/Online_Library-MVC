@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Online_Library.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Книга</h1>
+
+<p>
+    <a asp-action="Create">Създай</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Author)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.pages)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ISBN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.YearOfPublish)
+            </th>
+             <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th> 
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.pages)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ISBN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.YearOfPublish)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Title)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редактиране</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Детайли</a> |
+                <a href="#" onclick="confirmDelete('@item.Id','@item.Title')">Изтриване</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<script>
+    function confirmDelete(id, title) {
+        if (confirm(`Сигурни ли сте че искате да изтриете ${title}?`)) {
+            window.location.href = `/Book/Delete/${id}`;
+        }
+    }
+
+</script>
